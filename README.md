@@ -3,44 +3,59 @@
 # 👕 VANEMA — Plataforma de Personalización Textil y Gestión Empresarial
 
 ![Estado del proyecto](https://img.shields.io/badge/Estado-En%20desarrollo-blue)
-![Módulo](https://img.shields.io/badge/Módulo-Sistemas%20de%20Gestión%20Empresarial-green)
-![Ciclo](https://img.shields.io/badge/Grado%20Superior-DAM%20%2F%20DAW-orange)
+![Módulo](https://img.shields.io/badge/Módulo-Sistemas%20de%20Gesti%C3%B3n%20Empresarial-green)
+![Ciclo](https://img.shields.io/badge/Grado%20Superior-DAW%20%2F%20ASIR-orange)
 
 ## 📖 Descripción del proyecto
 
-**VANEMA** es un proyecto académico desarrollado para la optativa de **Sistemas de Gestión Empresarial (SGE)** de Ciclo Formativo de Grado Superior.
+**VANEMA** es un proyecto académico desarrollado para la optativa de **Sistemas de Gestión Empresarial (SGE)** en un Ciclo Formativo de Grado Superior (**DAW / ASIR**).
 
-La iniciativa simula el ecosistema digital y operativo de una marca especializada en la **personalización de prendas bajo demanda**. A través de nuestra plataforma web, los clientes pueden seleccionar prendas base de nuestro catálogo, crear o subir sus propios diseños y elegir la técnica de acabado (**bordado** o **serigrafía**).
+El proyecto plantea el entorno web y operativo de una marca enfocada en la **personalización de prendas bajo demanda**. A través de la web, los clientes eligen prendas base del catálogo, diseñan o suben sus propios archivos gráficos y seleccionan el tipo de acabado (**bordado** o **serigrafía**).
 
-El foco principal del proyecto reside en la integración entre la experiencia de venta online y la gestión interna del negocio, cubriendo el ciclo completo desde la recepción del pedido personalizado hasta su producción, control de inventario y facturación.
+Desde el enfoque de **DAW y ASIR**, el proyecto aborda tanto el desarrollo y la experiencia de usuario de la plataforma como la integración de procesos, el soporte de servicios/infraestructura y la conexión con el sistema de gestión empresarial para cubrir todo el ciclo de vida del pedido: recepción, validación, taller/producción, inventario, facturación y envío.
 
 ---
 
 ## ✨ Funcionalidades principales
 
-- **Catálogo de prendas base:** Selección de productos textiles disponibles según talla, color y disponibilidad en almacén.
-- **Personalización en web:** Subida y configuración de diseños propios por parte del cliente.
-- **Técnicas de producción:** Soporte para pedidos con acabado en **bordado** o **serigrafía**, adaptando costes y tiempos según la técnica elegida.
-- **Gestión integral de pedidos (SGE):** Seguimiento del estado del pedido (*pendiente de validación, en taller, empaquetado, enviado*).
-- **Control de stock y suministros:** Gestión de inventario tanto de prendas base como de consumibles (hilos, tintas, bastidores, etc.).
-- **Facturación y clientes:** Registro de clientes, generación de presupuestos y emisión de facturas automatizadas.
+- **Catálogo de prendas base:** Consulta de prendas disponibles por modelo, talla, color y disponibilidad en stock.
+- **Personalización en web:** Configuración y subida de diseños personalizados por parte del cliente.
+- **Técnicas de producción:** Selección de **bordado** o **serigrafía**, adaptando el flujo y los costes según la técnica elegida.
+- **Gestión de pedidos (SGE):** Trazabilidad del pedido desde su entrada en web hasta producción, preparación y entrega.
+- **Control de stock y suministros:** Seguimiento de inventario de prendas base y materiales de taller (hilos, tintas, bastidores, etc.).
+- **Clientes y facturación:** Gestión de datos de cliente, presupuestos, órdenes internas y facturación.
 
 ---
 
 ## 🔄 Flujo operativo del sistema
 
-1. **Pedido Web:** El cliente elige prenda, sube diseño y selecciona bordado o serigrafía.
-2. **Validación técnica:** Revisión del diseño y comprobación automática de stock en el sistema.
-3. **Orden de producción:** Asignación a taller según la técnica seleccionada.
-4. **Control de calidad y logística:** Empaquetado, actualización de inventario y envío al cliente.
-5. **Administración:** Registro contable y facturación dentro del sistema de gestión.
+1. **Solicitud web:** El cliente selecciona prenda, sube o configura su diseño y elige bordado o serigrafía.
+2. **Validación y stock:** Comprobación del diseño y verificación de disponibilidad de prenda y consumibles.
+3. **Producción:** Generación de orden de trabajo para bordado o serigrafía.
+4. **Logística y stock:** Actualización de inventario, empaquetado y gestión de envío.
+5. **Facturación:** Emisión de factura y registro del movimiento dentro del sistema de gestión.
 
 ---
 
-## 🛠️ Tecnologías y herramientas
+## 🛠️ Stack tecnológico y sistemas
 
-> *Nota: Completad o modificad esta sección según el stack técnico y el ERP que estéis utilizando.*
+> *Completad o ajustad este apartado según la arquitectura y herramientas reales de vuestro despliegue.*
 
-- **Frontend / Web:** HTML5, CSS3, JavaScript *(o el framework que uséis)*
-- **Backend / Base de datos:** *(Ej. Python / PHP / Node.js + MySQL / PostgreSQL)*
-- **Sistema de Gestión (ERP/CRM
+- **Aplicación web (Frontend / Backend):** *(Ej. HTML5, CSS3, JavaScript, PHP / Node.js / Python)*
+- **Base de datos:** *(Ej. MySQL / MariaDB / PostgreSQL)*
+- **Sistema de Gestión Empresarial (ERP/CRM):** *(Ej. Odoo / Dolibarr / integración vía API o conector)*
+- **Infraestructura y administración (ASIR):** *(Ej. Linux Server, Nginx/Apache, Docker, copias de seguridad, DNS/SSL)*
+- **Control de versiones:** Git & GitHub
+
+---
+
+## 👥 Autores
+
+- **Josemanuel Morató** — *[@usuario-github](https://github.com/)*
+- **Iván Piera** — *[@usuario-github](https://github.com/)*
+
+---
+
+## 📄 Licencia
+
+Proyecto realizado con fines académicos para la asignatura de **Sistemas de Gestión Empresarial** (Grado Superior **DAW / ASIR**).
