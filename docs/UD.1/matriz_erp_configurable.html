@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz de decisión · Selección de un ERP (configurable)</title>
+<style>
+  :root{
+    --accent:#156082;
+    --accent-dark:#0f4760;
+    --accent-light:#e8f1f5;
+    --ink:#1f2933;
+    --muted:#5b6b78;
+    --line:#d7e0e6;
+    --ok:#1f8a4c;
+    --ok-bg:#e7f6ec;
+    --warn:#b26a00;
+    --warn-bg:#fdf2e0;
+    --err:#b3261e;
+    --bg:#eef2f5;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.45;
+    padding:26px 16px 60px;
+  }
+  .page{max-width:1040px;margin:0 auto;}
+
+  header.top{
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);
+    color:#fff;border-radius:14px;padding:24px 28px;margin-bottom:16px;
+    box-shadow:0 8px 22px rgba(21,96,130,.22);
+  }
+  header.top h1{margin:0 0 6px;font-size:26px;letter-spacing:.2px;}
+  header.top .sub{font-size:14.5px;opacity:.92;margin:0;}
+  header.top .meta{margin-top:12px;font-size:13px;opacity:.88;border-top:1px solid rgba(255,255,255,.25);padding-top:10px;}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-bottom:16px;}
+  button{
+    font:inherit;font-size:13.5px;border:1px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:9px;padding:8px 14px;cursor:pointer;transition:background .15s,border-color .15s;
+  }
+  button:hover{border-color:var(--accent);background:var(--accent-light);}
+  button.primary{background:var(--accent);border-color:var(--accent-dark);color:#fff;}
+  button.primary:hover{background:var(--accent-dark);}
+  button.del{
+    background:transparent;border:none;padding:4px 8px;color:var(--err);font-size:16px;line-height:1;
+  }
+  button.del:hover{background:#fdecea;border-radius:6px;}
+  button:disabled{opacity:.45;cursor:not-allowed;}
+  button:disabled:hover{border-color:var(--line);background:#fff;}
+  button.primary:disabled:hover{background:var(--accent);border-color:var(--accent-dark);}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px 24px;box-shadow:0 4px 14px rgba(31,41,51,.06);
+  }
+
+  .fields{display:grid;gap:12px;margin-bottom:18px;}
+  .field{display:grid;gap:4px;}
+  .field > span:not(.print-text){font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  input[type=text],input[type=number],textarea{
+    font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);
+    border-radius:8px;padding:8px 10px;width:100%;min-width:0;
+  }
+  input[type=text]:focus,input[type=number]:focus,textarea:focus{
+    outline:2px solid rgba(21,96,130,.25);border-color:var(--accent);
+  }
+  input.empresa-nombre{font-size:19px;font-weight:600;color:var(--accent-dark);}
+  textarea{resize:vertical;min-height:74px;line-height:1.5;}
+
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;table-layout:fixed;min-width:740px;}
+  thead th{
+    background:var(--accent);color:#fff;text-align:left;padding:9px 10px;
+    font-size:12.5px;font-weight:600;border:1px solid var(--accent-dark);vertical-align:middle;
+  }
+  thead th:first-child{width:var(--crit-w,40%);}
+  thead th.peso{width:70px;}
+  thead th.acc{width:36px;}
+  thead th textarea.erp-name{
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+    color:#fff;border-radius:6px;padding:5px 8px;font-size:12px;font-weight:600;
+    line-height:1.3;
+  }
+  thead th textarea.erp-name::placeholder{color:rgba(255,255,255,.65);}
+  thead th textarea.erp-name:focus{outline:2px solid rgba(255,255,255,.5);}
+  tbody td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.num{text-align:center;}
+  textarea.crit-nombre{
+    resize:none;overflow:hidden;min-height:0;line-height:1.4;
+    padding:5px 8px;
+  }
+  textarea.erp-name{resize:none;overflow:hidden;min-height:0;}
+  .crit-print,.erp-print,.print-text{display:none;}
+  .crit-print{white-space:normal;}
+  .print-text{white-space:pre-wrap;}
+  thead th .erp-print{font-weight:600;}
+  .valor-wrap{display:inline-flex;align-items:center;gap:4px;}
+  .valor-wrap .sep{color:var(--muted);font-size:12px;}
+  input.peso{width:100%;text-align:right;padding:6px 8px;}
+  input.valor{width:50px;max-width:100%;text-align:center;padding:6px 4px;}
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  input[type=number]{-moz-appearance:textfield;appearance:textfield;}
+
+  tr.total td{
+    background:var(--accent-light);border-top:2px solid var(--accent);
+    font-weight:700;font-size:15.5px;padding:11px 10px;
+  }
+  tr.total td.lbl{text-align:right;color:var(--accent-dark);}
+  td.win,tr.total td.win{color:var(--ok);}
+  .win-pill{
+    display:inline-block;margin-left:6px;background:var(--ok-bg);color:var(--ok);
+    border:1px solid rgba(31,138,76,.35);border-radius:999px;
+    padding:1px 9px;font-size:11.5px;font-weight:600;vertical-align:middle;
+  }
+
+  .empty-state{
+    padding:28px 10px;text-align:center;color:var(--muted);font-size:14px;
+  }
+  .table-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;}
+  .table-meta{display:inline-flex;align-items:center;gap:14px;}
+  .suma.empate{color:var(--warn);font-weight:600;}
+
+  .subhead{
+    display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;
+    margin:22px 0 8px;
+  }
+  .subhead h2{margin:0;font-size:16px;color:var(--accent-dark);}
+  .suma{font-size:12.5px;color:var(--muted);}
+  .suma.bad{color:var(--warn);font-weight:600;}
+
+  .status{min-height:1.3em;margin:12px 0 0;font-size:13px;color:var(--muted);}
+  .status.err{color:var(--err);font-weight:600;}
+  .status.ok{color:var(--ok);font-weight:600;}
+
+  .pie{text-align:center;font-size:12px;color:var(--muted);margin-top:24px;}
+
+  #selftest{margin-top:20px;}
+  #selftest h2{font-size:15px;margin:0 0 8px;}
+  #selftest ul{margin:0;padding-left:18px;font-size:13px;}
+  #selftest li.pass{color:var(--ok);}
+  #selftest li.fail{color:var(--err);font-weight:600;}
+
+  @media (max-width:640px){
+    body{padding:14px 8px 40px;}
+    header.top{padding:18px 18px;}
+    .card{padding:16px 14px 20px;}
+  }
+
+  @media print{
+    body{background:#fff;padding:0;}
+    .no-print{display:none !important;}
+    #status,#selftest{display:none !important;}
+    .card{box-shadow:none;border:none;padding:0;}
+    header.top{
+      background:#fff !important;color:var(--ink) !important;border-radius:0;
+      box-shadow:none;border-bottom:2px solid var(--accent);padding:0 0 12px;
+    }
+    header.top .sub,header.top .meta{opacity:1;color:var(--muted);}
+    .table-wrap{overflow:visible;}
+    table{min-width:0 !important;}
+    thead th, tbody td{padding:6px 6px;}
+    thead th{background:#fff !important;color:var(--ink) !important;border:1px solid #9aa8b2;}
+    tr.total td{background:#fff !important;}
+    input,textarea{border:none !important;background:transparent !important;padding-left:0;}
+    input.peso,input.valor{text-align:center;padding:0;}
+    textarea{resize:none;min-height:0;height:auto;}
+    tr{break-inside:avoid;}
+    thead th.acc, tbody td.acc{display:none;}
+    .crit-nombre,.erp-name,#emp-nombre,#emp-desc,#conclusion,#fuentes{display:none !important;}
+    .crit-print,.erp-print,.print-text{display:block;overflow-wrap:anywhere;}
+    #emp-print{font-size:19px;font-weight:600;color:var(--accent-dark);}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <h1>Matriz de decisión para la selección de un ERP</h1>
+    <p class="sub">Comparativa editable y reutilizable para cualquier empresa.</p>
+    <div class="meta"><div class="meta">Herramienta de apoyo a la decisión · puntuación 0–3 · total sobre 100</div>
+  </header>
+
+  <div class="toolbar no-print" id="toolbar"></div>
+  <div id="app"></div>
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+  <footer class="pie no-print">Fichero único HTML+CSS+JS · sin dependencias · datos guardados en este navegador</footer>
+  <div id="selftest"></div>
+</div>
+
+<script>
+/* ---------- Modelo de datos ---------- */
+const LS_KEY = "matriz-erp-config-v1";
+const TEST_KEY = LS_KEY + "-selftest";
+const SELFTEST = new URLSearchParams(location.search).get("selftest") === "1";
+const RO = "";
+const MIN_ERPS = 2;
+const MAX_ERPS = 5;
+let dirty = false;
+let storageWarning = false;
+
+const DEFAULT_STATE = {
+  version: 1,
+  empresa: { nombre: "", descripcion: "" },
+  erps: ["Odoo Enterprise", "Microsoft Dynamics 365 Business Central"],
+  criterios: [
+    { id:"c1", nombre:"Cobertura funcional (almacén, compras, ventas, CRM y contabilidad)", peso:30, valores:[0,0] },
+    { id:"c2", nombre:"Coste total de propiedad (TCO) a 5 años",                          peso:25, valores:[0,0] },
+    { id:"c3", nombre:"Capacidad de integración con otros programas y sistemas",          peso:15, valores:[0,0] },
+    { id:"c4", nombre:"Facilidad de uso, aprendizaje y disponibilidad de app móvil",      peso:10, valores:[0,0] },
+    { id:"c5", nombre:"Adaptación a la normativa española (PGC, IVA, VeriFactu y facturación electrónica)", peso:10, valores:[0,0] },
+    { id:"c6", nombre:"Disponibilidad de partners, implantadores y soporte técnico en la zona", peso:10, valores:[0,0] }
+  ],
+  conclusion: "",
+  fuentes: ""
+};
+
+let state = clone(DEFAULT_STATE);
+
+/* ---------- Utilidades ---------- */
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function round2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
+function fmt(n){ return round2(n).toFixed(2).replace(".", ","); }
+function esc(s){
+  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function num(v){ const n = Number(v); return Number.isFinite(n) ? n : 0; }
+
+/* ---------- Cálculo ---------- */
+function sumPesos(st = state){
+  return st.criterios.reduce((a,c)=>a + Math.max(0, num(c.peso)), 0);
+}
+function calcTotal(st, e){
+  const sw = sumPesos(st);
+  if(!(sw > 0)) return 0;
+  const bruto = st.criterios.reduce((a,c)=>{
+    const v = Math.max(0, Math.min(3, num(c.valores && c.valores[e])));
+    return a + v * Math.max(0, num(c.peso));
+  }, 0) / 3;
+  return round2(bruto / sw * 100);
+}
+function winnerIndex(st = state){
+  const totales = st.erps.map((_, e) => calcTotal(st, e));
+  const max = Math.max(...totales);
+  if(!(max > 0)) return -1;
+  if(totales.filter(t => Math.abs(t - max) < 0.005).length > 1) return -1;
+  return totales.findIndex(t => Math.abs(t - max) < 0.005);
+}
+function allTotals(st = state){
+  return st.erps.map((_, e) => calcTotal(st, e));
+}
+
+/* ---------- Persistencia ---------- */
+let saveTimer = null;
+function uid(){
+  return (crypto && crypto.randomUUID) ? crypto.randomUUID()
+       : "c" + Date.now().toString(36) + Math.random().toString(16).slice(2);
+}
+function safeParse(raw){ try{ return JSON.parse(raw); }catch(e){ return null; } }
+function isValidState(o){
+  if(!o || typeof o !== "object") return false;
+  if(o.version !== undefined && o.version !== 1) return false;
+  if(!Array.isArray(o.erps) || o.erps.length < MIN_ERPS || o.erps.length > MAX_ERPS) return false;
+  if(!Array.isArray(o.criterios)) return false;
+  const n = o.erps.length;
+  return o.criterios.every(c => c && typeof c === "object" &&
+    typeof c.nombre === "string" &&
+    Number.isFinite(Number(c.peso)) &&
+    Array.isArray(c.valores) && c.valores.length === n &&
+    c.valores.every(v => Number.isFinite(Number(v))));
+}
+function normalizeState(o){
+  const vistos = new Set();
+  const n = Math.min(MAX_ERPS, Math.max(MIN_ERPS, o.erps.length));
+  const criterios = o.criterios.map(c => {
+    let id = c.id ? String(c.id) : uid();
+    while(!id || vistos.has(id)){ id = uid(); }
+    vistos.add(id);
+    return {
+      id,
+      nombre: String(c.nombre),
+      peso: Math.max(0, num(c.peso)),
+      valores: Array.from({ length:n }, (_, e) =>
+        Math.max(0, Math.min(3, Math.round(num(c.valores[e])))))
+    };
+  });
+  return {
+    version: 1,
+    empresa: {
+      nombre: String((o.empresa && o.empresa.nombre) || ""),
+      descripcion: String((o.empresa && o.empresa.descripcion) || "")
+    },
+    erps: Array.from({ length:n }, (_, e) => String(o.erps[e] || "")),
+    criterios,
+    conclusion: String(o.conclusion || ""),
+    fuentes: String(o.fuentes || "")
+  };
+}
+function parseStoredState(raw, key = LS_KEY){
+  if(!raw) return clone(DEFAULT_STATE);
+  const o = safeParse(raw);
+  if(!(o && isValidState(o))){
+    storageWarning = true;
+    try{ localStorage.setItem(key + "-corrupt", raw); }catch(e){}
+    return clone(DEFAULT_STATE);
+  }
+  return normalizeState(o);
+}
+function loadState(key = LS_KEY){
+  try{ return parseStoredState(localStorage.getItem(key), key); }
+  catch(e){ storageWarning = true; return clone(DEFAULT_STATE); }
+}
+function saveNow(key = LS_KEY){
+  try{
+    localStorage.setItem(key, JSON.stringify(state));
+    if(key === LS_KEY){ dirty = false; storageWarning = false; }
+    return true;
+  }catch(e){
+    if(key === LS_KEY) setStatus("No se pudo guardar: el almacenamiento del navegador está lleno o bloqueado.", "err");
+    return false;
+  }
+}
+function save(){
+  if(SELFTEST) return;
+  dirty = true;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 300);
+}
+function flushSave(){
+  if(SELFTEST || storageWarning || !dirty) return;
+  clearTimeout(saveTimer);
+  saveNow();
+}
+window.addEventListener("pagehide", flushSave);
+window.addEventListener("beforeunload", flushSave);
+window.addEventListener("storage", e => {
+  if(e.key === LS_KEY){
+    setStatus("Otra pestaña ha guardado cambios en la matriz. Recarga la página para verlos.", "err");
+  }
+});
+
+/* ---------- Acciones ---------- */
+function findCrit(id){ return state.criterios.find(c => c.id === id); }
+
+function autosize(el){
+  if(!el || el.tagName !== "TEXTAREA") return;
+  el.style.height = "auto";
+  el.style.height = Math.max(el.scrollHeight, Number(el.dataset.min || 0)) + "px";
+}
+function autosizeAll(){
+  document.querySelectorAll("#app textarea").forEach(autosize);
+}
+
+function addCriterion(){
+  const c = { id: uid(), nombre: "Nuevo criterio", peso: 0, valores: [0, 0] };
+  state.criterios.push(c);
+  return c;
+}
+function removeCriterion(id){
+  const c = findCrit(id);
+  if(!c) return false;
+  const msg = state.criterios.length === 1
+    ? "¿Quitar el último criterio? La tabla quedará vacía."
+    : "¿Quitar el criterio «" + c.nombre + "»?";
+  if(!window.confirm(msg)) return false;
+  state.criterios = state.criterios.filter(x => x.id !== id);
+  return true;
+}
+
+function addErp(){
+  if(state.erps.length >= MAX_ERPS) return false;
+  state.erps.push("");
+  state.criterios.forEach(c => {
+    while(c.valores.length < state.erps.length) c.valores.push(0);
+  });
+  return true;
+}
+function removeErp(){
+  if(state.erps.length <= MIN_ERPS) return false;
+  const nombre = state.erps[state.erps.length - 1];
+  const msg = "¿Quitar el ERP " + state.erps.length + (nombre ? " («" + nombre + "»)" : "") +
+              " y sus valoraciones?";
+  if(!window.confirm(msg)) return false;
+  state.erps.pop();
+  state.criterios.forEach(c => { c.valores.length = state.erps.length; });
+  return true;
+}
+
+function onInput(e){
+  const t = e.target;
+  if(t.id === "emp-nombre"){ state.empresa.nombre = t.value; }
+  else if(t.id === "emp-desc"){ state.empresa.descripcion = t.value; }
+  else if(t.id === "conclusion"){ state.conclusion = t.value; }
+  else if(t.id === "fuentes"){ state.fuentes = t.value; }
+  else if(t.classList.contains("erp-name")){ state.erps[Number(t.dataset.erp)] = t.value; }
+  else if(t.classList.contains("crit-nombre")){ const c = findCrit(t.dataset.id); if(c) c.nombre = t.value; }
+  else if(t.classList.contains("peso")){ const c = findCrit(t.dataset.id); if(c) c.peso = Math.max(0, num(t.value)); }
+  else if(t.classList.contains("valor")){
+    const c = findCrit(t.dataset.id);
+    if(c) c.valores[Number(t.dataset.erp)] = Math.max(0, Math.min(3, Math.round(num(t.value))));
+  }
+  else{ return; }
+  autosize(t);
+  updateTotals();
+  save();
+}
+
+function onChange(e){
+  const t = e.target;
+  if(t.classList.contains("valor")){
+    const c = findCrit(t.dataset.id);
+    if(c) t.value = c.valores[Number(t.dataset.erp)];
+  }else if(t.classList.contains("peso")){
+    const c = findCrit(t.dataset.id);
+    if(c) t.value = c.peso;
+  }
+}
+
+function onClick(e){
+  const add = e.target.closest("#add-crit");
+  if(add){
+    const c = addCriterion();
+    renderRows();
+    save();
+    const inp = document.querySelector(`.crit-nombre[data-id="${c.id}"]`);
+    if(inp){ inp.focus(); inp.select(); }
+    return;
+  }
+  const del = e.target.closest("button.del");
+  if(del){
+    if(removeCriterion(del.dataset.id)){ renderRows(); save(); }
+  }
+}
+
+/* ---------- Exportar / importar / reiniciar ---------- */
+function setStatus(msg, tipo){
+  const el = document.getElementById("status");
+  if(!el) return;
+  el.textContent = msg || "";
+  el.className = "status" + (tipo ? " " + tipo : "");
+}
+function buildExport(st = state){ return JSON.stringify(st, null, 2); }
+function parseImport(text){
+  if(typeof text !== "string" || text.length > 2000000) return null;
+  const o = safeParse(text);
+  if(!(o && isValidState(o)) || o.criterios.length > 200) return null;
+  return normalizeState(o);
+}
+function applyImport(text){
+  const s = parseImport(text);
+  if(!s){
+    setStatus("El archivo no es una matriz válida. No se ha cambiado nada.", "err");
+    return false;
+  }
+  state = s;
+  render();
+  if(!SELFTEST) saveNow();
+  setStatus("Matriz importada correctamente.", "ok");
+  return true;
+}
+function slugify(s){
+  return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+function exportJSON(){
+  const nombre = "matriz-erp-" + (slugify(state.empresa.nombre) || "sin-empresa") + ".json";
+  const blob = new Blob([buildExport()], { type:"application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setStatus("Matriz exportada como " + nombre, "ok");
+}
+function resetState(){
+  if(!window.confirm("¿Borrar todos los datos y volver a la matriz por defecto?")) return;
+  state = clone(DEFAULT_STATE);
+  render();
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  setStatus("Matriz reiniciada a los valores por defecto.", "ok");
+}
+function onFile(e){
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  if(f.size > 2000000){
+    setStatus("El archivo es demasiado grande (máximo 2 MB).", "err");
+    e.target.value = "";
+    return;
+  }
+  const leer = f.text ? f.text() : Promise.resolve("");
+  leer.then(text => applyImport(text))
+      .catch(() => setStatus("No se pudo leer el archivo.", "err"))
+      .then(() => { e.target.value = ""; });
+}
+function initToolbar(){
+  const tb = document.getElementById("toolbar");
+  tb.innerHTML = `
+    <button type="button" id="add-erp">+ Añadir ERP</button>
+    <button type="button" id="del-erp">− Quitar ERP</button>
+    <button type="button" id="btn-export">Exportar JSON</button>
+    <button type="button" id="btn-import">Importar JSON</button>
+    <button type="button" id="btn-reset">Reiniciar</button>
+    <button type="button" id="btn-print" class="primary">Imprimir / PDF</button>
+    <input type="file" id="file-import" accept="application/json,.json" hidden>`;
+  document.getElementById("add-erp").addEventListener("click", () => {
+    if(addErp()){ render(); save(); }
+  });
+  document.getElementById("del-erp").addEventListener("click", () => {
+    if(removeErp()){ render(); save(); }
+  });
+  document.getElementById("btn-export").addEventListener("click", exportJSON);
+  document.getElementById("btn-import").addEventListener("click", () => document.getElementById("file-import").click());
+  document.getElementById("file-import").addEventListener("change", onFile);
+  document.getElementById("btn-reset").addEventListener("click", resetState);
+  document.getElementById("btn-print").addEventListener("click", () => window.print());
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const st = state;
+  const n = st.erps.length;
+  const critW = n <= 2 ? "40%" : (n === 3 ? "34%" : "30%");
+  const minW = 740 + (n - MIN_ERPS) * 60;
+  const thErps = st.erps.map((nombre, e) => `
+                <th class="erp"><textarea rows="1" class="erp-name" data-erp="${e}" placeholder="ERP ${e + 1}" aria-label="Nombre del ERP ${e + 1}" ${RO}>${esc(nombre)}</textarea><span class="erp-print" data-erp="${e}">${esc(nombre)}</span></th>`).join("");
+  document.getElementById("app").innerHTML = `
+    <section class="card">
+      <div class="fields">
+        <label class="field"><span>Empresa</span>
+          <input type="text" id="emp-nombre" class="empresa-nombre" placeholder="Nombre de la empresa"
+                 value="${esc(st.empresa.nombre)}" ${RO}>
+          <span class="print-text emp-print" id="emp-print"></span>
+        </label>
+        <label class="field"><span>Contexto y necesidades</span>
+          <textarea id="emp-desc" placeholder="Sector, tamaño, facturación, procesos clave..." ${RO}>${esc(st.empresa.descripcion)}</textarea>
+          <span class="print-text" id="emp-desc-print"></span>
+        </label>
+      </div>
+
+      <div class="table-wrap">
+        <table style="--crit-w:${critW};min-width:${minW}px">
+          <thead>
+            <tr>
+              <th>Criterio</th>
+              <th class="peso">Peso</th>${thErps}
+              <th class="acc"></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="table-actions no-print">
+        <button type="button" id="add-crit" class="primary">+ Añadir criterio</button>
+        <span class="table-meta"><span class="suma empate" id="aviso-empate"></span><span class="suma" id="suma-pesos"></span></span>
+      </div>
+
+      <div class="subhead">
+        <h2>Conclusión</h2>
+      </div>
+      <div class="fields">
+        <label class="field"><span>Decisión final (opcional)</span>
+          <textarea id="conclusion" placeholder="Qué ERP eliges y por qué..." ${RO}>${esc(st.conclusion)}</textarea>
+          <span class="print-text" id="conclusion-print"></span>
+        </label>
+        <label class="field"><span>Notas y fuentes (opcional)</span>
+          <textarea id="fuentes" placeholder="Precios, enlaces, fecha de consulta..." ${RO}>${esc(st.fuentes)}</textarea>
+          <span class="print-text" id="fuentes-print"></span>
+        </label>
+      </div>
+    </section>`;
+  renderRows();
+}
+
+function renderRows(){
+  const tb = document.getElementById("tbody");
+  if(!state.criterios.length){
+    tb.innerHTML = `<tr><td colspan="${2 + state.erps.length + 1}"><div class="empty-state">No hay criterios todavía. Pulsa «Añadir criterio» para empezar.</div></td></tr>`;
+    autosizeAll();
+    updateTotals();
+    return;
+  }
+  tb.innerHTML = state.criterios.map(c=>`
+    <tr data-id="${esc(c.id)}">
+      <td class="crit-cell"><textarea rows="1" class="crit-nombre" data-id="${esc(c.id)}" title="${esc(c.nombre)}" aria-label="Nombre del criterio" ${RO}>${esc(c.nombre)}</textarea><span class="crit-print" data-id="${esc(c.id)}">${esc(c.nombre)}</span></td>
+      <td class="num"><input type="number" class="peso" data-id="${esc(c.id)}" min="0" step="1" aria-label="Peso"
+             value="${num(c.peso)}" ${RO}></td>${
+        state.erps.map((_, e) => `
+      <td class="num"><span class="valor-wrap"><input type="number" class="valor" data-id="${esc(c.id)}" data-erp="${e}" min="0" max="3" step="1" aria-label="Valoración ERP ${e + 1}"
+             value="${num(c.valores[e])}" ${RO}> <span class="sep">/</span> <span class="pond" id="p-${esc(c.id)}-${e}">-</span></span></td>`).join("")}
+      <td class="num acc"><button type="button" class="del" data-id="${esc(c.id)}" title="Quitar criterio" aria-label="Quitar criterio">✕</button></td>
+    </tr>`).join("") + `
+    <tr class="total">
+      <td class="lbl" colspan="2">Puntuación total /100</td>${
+        state.erps.map((_, e) => `
+      <td class="num" id="tot-${e}">-</td>`).join("")}
+      <td></td>
+    </tr>`;
+  autosizeAll();
+  updateTotals();
+}
+
+function syncErpButtons(){
+  const add = document.getElementById("add-erp");
+  const del = document.getElementById("del-erp");
+  if(add) add.disabled = state.erps.length >= MAX_ERPS;
+  if(del) del.disabled = state.erps.length <= MIN_ERPS;
+}
+
+function updateTotals(){
+  const sw = sumPesos();
+  const suma = document.getElementById("suma-pesos");
+  if(suma){
+    suma.textContent = "Σ pesos = " + (Number.isInteger(sw) ? sw : fmt(sw)) + "%";
+    suma.classList.toggle("bad", Math.abs(sw - 100) > 0.005);
+  }
+  state.criterios.forEach(c=>{
+    state.erps.forEach((_, e)=>{
+      const el = document.getElementById(`p-${c.id}-${e}`);
+      if(!el) return;
+      const v = Math.max(0, Math.min(3, num(c.valores[e])));
+      const pond = sw > 0 ? (v * Math.max(0, num(c.peso)) / 3) / sw * 100 : 0;
+      el.textContent = fmt(pond);
+    });
+  });
+  const totales = allTotals();
+  const win = winnerIndex();
+  state.erps.forEach((_, e)=>{
+    const el = document.getElementById(`tot-${e}`);
+    if(!el) return;
+    el.classList.toggle("win", e === win);
+    el.innerHTML = fmt(totales[e]) + (e === win ? ' <span class="win-pill">✔ mejor</span>' : "");
+    const pe = document.querySelector(`.erp-print[data-erp="${e}"]`);
+    if(pe) pe.textContent = state.erps[e] || "";
+  });
+  document.querySelectorAll(".crit-print").forEach(el=>{
+    const c = findCrit(el.dataset.id);
+    if(c) el.textContent = c.nombre;
+  });
+  const aviso = document.getElementById("aviso-empate");
+  if(aviso){
+    const empate = win === -1 && Math.max(...totales) > 0;
+    aviso.textContent = empate ? "Empate" : "";
+  }
+  syncErpButtons();
+  const setTxt = (sel, valor) => {
+    const el = document.querySelector(sel);
+    if(el) el.textContent = valor || "";
+  };
+  setTxt("#emp-print", state.empresa.nombre);
+  setTxt("#emp-desc-print", state.empresa.descripcion);
+  setTxt("#conclusion-print", state.conclusion);
+  setTxt("#fuentes-print", state.fuentes);
+}
+
+/* ---------- Arnés de pruebas (modo ?selftest=1) ---------- */
+const TEST_RESULTS = [];
+function check(name, fn, expected){
+  try{
+    const actual = fn();
+    let ok;
+    if(typeof expected === "number"){
+      ok = Math.abs(Number(actual) - expected) < 0.011;
+    }else if(Array.isArray(expected)){
+      ok = Array.isArray(actual) && actual.length === expected.length &&
+           expected.every((x,i) => (typeof x === "number" && typeof actual[i] === "number")
+             ? Math.abs(actual[i] - x) < 0.011
+             : actual[i] === x);
+    }else{
+      ok = actual === expected;
+    }
+    TEST_RESULTS.push({ name, ok, actual, expected });
+  }catch(err){
+    TEST_RESULTS.push({ name, ok:false, actual:"ERROR: " + err.message, expected });
+  }
+}
+
+function runSelfTest(){
+  const st = (criterios, erps=["A","B"]) => ({
+    version:1, empresa:{nombre:"",descripcion:""}, erps,
+    criterios, conclusion:"", fuentes:""
+  });
+  const c = (peso, a, b) => ({ id:"x"+Math.random(), nombre:"C", peso, valores:[a,b] });
+
+  check("todo 3 con pesos que suman 100 da 100", () =>
+    calcTotal(st([c(30,3,3),c(25,3,3),c(15,3,3),c(10,3,3),c(10,3,3),c(10,3,3)]), 0), 100);
+  check("todo 0 da 0", () =>
+    calcTotal(st([c(50,0,0),c(50,0,0)]), 0), 0);
+  check("pesos 3/7 se normalizan: [3,3] da 100 y [3,0] da 30", () => {
+    const s = st([c(3,3,3), c(7,3,0)]);
+    return [calcTotal(s,0), calcTotal(s,1)];
+  }, [100,30]);
+  check("pesos a 0 dan 0 sin NaN", () =>
+    calcTotal(st([c(0,3,2),c(0,1,1)]), 0), 0);
+  check("regresión Empresa 1 original da Odoo 96,67 y BC 55,00", () => {
+    const s = st([
+      c(30,3,1), c(25,3,1), c(15,3,2), c(10,2,2), c(10,3,3), c(10,3,3)
+    ]);
+    return [calcTotal(s,0), calcTotal(s,1)];
+  }, [96.67, 55]);
+  check("recorta las valoraciones a 0–3", () => {
+    const s = st([{ id:"z", nombre:"C", peso:10, valores:[9,-4] }]);
+    return [calcTotal(s,0), calcTotal(s,1)];
+  }, [100, 0]);
+  check("gana el ERP con más puntuación", () => {
+    const prev = clone(state);
+    state.criterios = [{ id:"z", nombre:"C", peso:50, valores:[3,1] }];
+    updateTotals();
+    const r = [winnerIndex(), !!document.querySelector("#tot-0 .win-pill")];
+    state = prev; render();
+    return r;
+  }, [0, true]);
+  check("un empate con puntuación muestra el aviso", () => {
+    const prev = clone(state);
+    state.criterios = [{ id:"z", nombre:"C", peso:50, valores:[2,2] }];
+    updateTotals();
+    const el = document.getElementById("aviso-empate");
+    const txt = el ? el.textContent : "";
+    state = prev; render();
+    return /empate/i.test(txt);
+  }, true);
+  check("los textos largos se ven enteros en pantalla", () => {
+    const prev = clone(state);
+    state.empresa.descripcion = "Texto de contexto muy largo para comprobar que la caja crece. ".repeat(12);
+    state.conclusion = "Texto de conclusión muy largo para comprobar que la caja crece. ".repeat(10);
+    state.fuentes = "https://www.odoo.com/pricing\nhttps://www.microsoft.com/es-es/dynamics-365/products/business-central/pricing";
+    state.criterios[0].nombre = "Criterio con un nombre larguísimo que debe envolver en varias líneas sin recortarse";
+    state.erps[1] = "Microsoft Dynamics 365 Business Central";
+    render();
+    const malos = [...document.querySelectorAll("#app textarea")]
+      .filter(t => t.scrollHeight - t.clientHeight > 3 || t.scrollWidth - t.clientWidth > 3)
+      .map(t => t.className || t.id);
+    state = prev; render();
+    return malos;
+  }, []);
+
+  /* --- Varios ERPs --- */
+  const confirmOriginal2 = window.confirm;
+  window.confirm = () => true;
+  try{
+    check("con tres ERPs cada columna tiene su total", () => {
+      const s = st([{ id:"a", nombre:"C", peso:100, valores:[3,2,1] }], ["A","B","C"]);
+      return allTotals(s);
+    }, [100, 66.67, 33.33]);
+    check("el mejor se elige entre todos los ERPs", () => {
+      const s = st([{ id:"a", nombre:"C", peso:100, valores:[1,2,3] }], ["A","B","C"]);
+      return winnerIndex(s);
+    }, 2);
+    check("empate en cabeza con tres ERPs no marca ganador", () => {
+      const s = st([{ id:"a", nombre:"C", peso:100, valores:[3,1,3] }], ["A","B","C"]);
+      return winnerIndex(s);
+    }, -1);
+    check("el botón añadir ERP crea su columna y su total", () => {
+      const prev = clone(state);
+      document.getElementById("add-erp").click();
+      const r = [state.erps.length, state.criterios.every(c => c.valores.length === 3),
+                 document.querySelectorAll("thead th.erp").length,
+                 document.querySelectorAll("input.valor[data-erp='2']").length,
+                 !!document.getElementById("tot-2")];
+      state = prev; render();
+      return r;
+    }, [3, true, 3, 6, true]);
+    check("no se puede pasar de 5 ERPs", () => {
+      const prev = clone(state);
+      for(let i = 0; i < 5; i++) document.getElementById("add-erp").click();
+      const r = [state.erps.length, document.getElementById("add-erp").disabled];
+      state = prev; render();
+      return r;
+    }, [5, true]);
+    check("el botón quitar ERP vuelve a dos columnas", () => {
+      const prev = clone(state);
+      document.getElementById("add-erp").click();
+      document.getElementById("del-erp").click();
+      const r = [state.erps.length, document.getElementById("del-erp").disabled,
+                 document.querySelectorAll("thead th.erp").length];
+      state = prev; render();
+      return r;
+    }, [2, true, 2]);
+    check("quitar un ERP se lleva sus valoraciones", () => {
+      const prev = clone(state);
+      addErp(); render();
+      const c0 = state.criterios[0];
+      c0.valores = [1, 2, 3];
+      removeErp();
+      const r = [state.erps.length, c0.valores.length, c0.valores.join(",")];
+      state = prev; render();
+      return r;
+    }, [2, 2, "1,2"]);
+    check("importar una matriz de tres ERPs funciona", () => {
+      const prev = clone(state);
+      const s = clone(DEFAULT_STATE);
+      s.erps = ["Odoo", "Business Central", "Sage"];
+      s.criterios = s.criterios.map(c => ({ id:c.id, nombre:c.nombre, peso:c.peso, valores:[3,2,1] }));
+      const ok = applyImport(JSON.stringify(s));
+      const r = [ok, state.erps.length, state.criterios[0].valores.join(",")];
+      state = prev; render();
+      return r;
+    }, [true, 3, "3,2,1"]);
+    check("rechaza un JSON con menos valoraciones que ERPs", () => {
+      const s = clone(DEFAULT_STATE);
+      s.erps = ["A", "B", "C"];
+      return parseImport(JSON.stringify(s)) === null;
+    }, true);
+    check("rechaza un JSON con más de 5 ERPs", () => {
+      const s = clone(DEFAULT_STATE);
+      s.erps = ["A", "B", "C", "D", "E", "F"];
+      s.criterios = s.criterios.map(c => ({ id:c.id, nombre:c.nombre, peso:c.peso, valores:[0,0,0,0,0,0] }));
+      return parseImport(JSON.stringify(s)) === null;
+    }, true);
+  }finally{
+    window.confirm = confirmOriginal2;
+    state = clone(DEFAULT_STATE);
+    render();
+  }
+
+  /* --- Interacción (Tarea 2) --- */
+  const antes = clone(state);
+  const confirmOriginal = window.confirm;
+  window.confirm = () => true;
+  try{
+    check("el botón añadir crea un criterio", () => {
+      document.getElementById("add-crit").click();
+      return state.criterios.length;
+    }, 7);
+    check("editar peso y valor recalcula el total", () => {
+      const nuevo = state.criterios[state.criterios.length - 1];
+      const antesTotal = calcTotal(state, 0);
+      const ip = document.querySelector(`input.peso[data-id="${nuevo.id}"]`);
+      const iv = document.querySelector(`input.valor[data-id="${nuevo.id}"][data-erp="0"]`);
+      ip.value = "100"; ip.dispatchEvent(new Event("input", { bubbles:true }));
+      iv.value = "3";   iv.dispatchEvent(new Event("input", { bubbles:true }));
+      const despues = calcTotal(state, 0);
+      return [antesTotal, despues, document.getElementById("tot-0").textContent.trim().startsWith("50,00")];
+    }, [0, 50, true]);
+    check("el botón de borrar quita el criterio", () => {
+      document.querySelector(`tr[data-id="${state.criterios[state.criterios.length - 1].id}"] .del`).click();
+      return state.criterios.length;
+    }, 6);
+    check("sin criterios aparece el estado vacío", () => {
+      let guarda = 30;
+      while(document.querySelector("button.del") && guarda--){ document.querySelector("button.del").click(); }
+      return document.querySelectorAll(".empty-state").length;
+    }, 1);
+    check("JSON corrupto en almacenamiento cae a los valores por defecto", () => {
+      const s = parseStoredState("{roto");
+      return [s.criterios.length, s.empresa.nombre];
+    }, [6, ""]);
+    check("guardar y recuperar conserva los datos", () => {
+      const prev = clone(state);
+      state = clone(DEFAULT_STATE);
+      state.empresa.nombre = "Prueba";
+      saveNow(TEST_KEY);
+      const leido = loadState(TEST_KEY);
+      try{ localStorage.removeItem(TEST_KEY); }catch(e){}
+      state = prev;
+      return leido.empresa.nombre;
+    }, "Prueba");
+  }finally{
+    window.confirm = confirmOriginal;
+    state = antes;
+    render();
+  }
+
+  /* --- Exportar / importar (Tarea 3) --- */
+  try{
+    check("exportar produce un JSON válido con el esquema", () => {
+      const o = JSON.parse(buildExport(state));
+      return [o.version, Array.isArray(o.criterios), o.criterios.length];
+    }, [1, true, 6]);
+    check("importar un JSON válido lo aplica", () => {
+      const prev = clone(state);
+      const s = clone(DEFAULT_STATE); s.empresa.nombre = "Importada";
+      const ok = applyImport(buildExport(s));
+      const nombre = state.empresa.nombre;
+      state = prev; render();
+      return [ok, nombre];
+    }, [true, "Importada"]);
+    check("importar un JSON inválido no toca el estado", () => {
+      const prev = clone(state);
+      const ok = applyImport('{"foo":1}');
+      return [ok, JSON.stringify(state) === JSON.stringify(prev)];
+    }, [false, true]);
+    check("importar con ids duplicados los hace únicos", () => {
+      const s = clone(DEFAULT_STATE);
+      s.criterios[1].id = s.criterios[0].id;
+      const r = parseImport(JSON.stringify(s));
+      return new Set(r.criterios.map(c => c.id)).size;
+    }, 6);
+    check("importar más de 200 criterios se rechaza", () => {
+      const s = clone(DEFAULT_STATE);
+      s.criterios = Array.from({ length:201 }, (_, i) => ({ id:"x"+i, nombre:"C"+i, peso:1, valores:[0,0] }));
+      return parseImport(JSON.stringify(s)) === null;
+    }, true);
+    check("el modo test no toca la matriz guardada", () => {
+      const raw = k => { try{ return localStorage.getItem(k); }catch(e){ return null; } };
+      const antes = raw(LS_KEY);
+      saveNow(TEST_KEY);
+      const despues = raw(LS_KEY);
+      try{ localStorage.removeItem(TEST_KEY); }catch(e){}
+      return antes === despues;
+    }, true);
+    check("un JSON corrupto deja copia de seguridad", () => {
+      const raw = k => { try{ return localStorage.getItem(k); }catch(e){ return null; } };
+      try{ localStorage.removeItem(TEST_KEY + "-corrupt"); }catch(e){}
+      const s = parseStoredState("{roto", TEST_KEY);
+      const copia = raw(TEST_KEY + "-corrupt");
+      try{ localStorage.removeItem(TEST_KEY + "-corrupt"); }catch(e){}
+      return [s.criterios.length, copia];
+    }, [6, "{roto"]);
+  }finally{
+    state = clone(DEFAULT_STATE);
+    render();
+  }
+
+  const box = document.getElementById("selftest");
+  const fails = TEST_RESULTS.filter(r=>!r.ok).length;
+  box.innerHTML = `<h2>Autopruebas: ${TEST_RESULTS.length - fails}/${TEST_RESULTS.length} correctas</h2><ul>` +
+    TEST_RESULTS.map(r=>`<li class="${r.ok?"pass":"fail"}">${r.ok?"✔":"✘"} ${r.name} → ${JSON.stringify(r.actual)} (esperado ${JSON.stringify(r.expected)})</li>`).join("") + `</ul>`;
+  document.body.dataset.selftest = fails ? "fail" : "pass";
+}
+
+/* ---------- Arranque ---------- */
+function init(){
+  storageWarning = false;
+  state = SELFTEST ? clone(DEFAULT_STATE) : loadState();
+  initToolbar();
+  render();
+  const app = document.getElementById("app");
+  app.addEventListener("input", onInput);
+  app.addEventListener("change", onChange);
+  app.addEventListener("click", onClick);
+  if(storageWarning && !SELFTEST){
+    setStatus("No se pudo leer la matriz guardada; se ha cargado la de fábrica. Se conservó una copia en «" + LS_KEY + "-corrupt».", "err");
+  }
+  if(SELFTEST){ runSelfTest(); }
+}
+init();
+</script>
+</body>
+</html>
