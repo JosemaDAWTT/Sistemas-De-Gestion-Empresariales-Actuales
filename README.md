@@ -1,27 +1,46 @@
 # Sistemas-De-Gesti-n-Empresariales-Actuales
 
+# 👕 VANEMA — Plataforma de Personalización Textil y Gestión Empresarial
 
+![Estado del proyecto](https://img.shields.io/badge/Estado-En%20desarrollo-blue)
+![Módulo](https://img.shields.io/badge/Módulo-Sistemas%20de%20Gestión%20Empresarial-green)
+![Ciclo](https://img.shields.io/badge/Grado%20Superior-DAM%20%2F%20DAW-orange)
 
-NOTIFICACIÓN OFICIAL DE APERCIBIMIENTO Y PENA ADMINISTRATIVA
+## 📖 Descripción del proyecto
 
-Expediente: PRY-2026/JM-042
+**VANEMA** es un proyecto académico desarrollado para la optativa de **Sistemas de Gestión Empresarial (SGE)** de Ciclo Formativo de Grado Superior.
 
-Asunto: Reiteración de conductas gravemente perjudiciales para el avance del proyecto
+La iniciativa simula el ecosistema digital y operativo de una marca especializada en la **personalización de prendas bajo demanda**. A través de nuestra plataforma web, los clientes pueden seleccionar prendas base de nuestro catálogo, crear o subir sus propios diseños y elegir la técnica de acabado (**bordado** o **serigrafía**).
 
-A la atención de: D. José Manuel Morato
+El foco principal del proyecto reside en la integración entre la experiencia de venta online y la gestión interna del negocio, cubriendo el ciclo completo desde la recepción del pedido personalizado hasta su producción, control de inventario y facturación.
 
-Cargo: Colaborador del proyecto (en situación de observación estricta)
+---
 
-Por medio de la presente resolución administrativa, se le comunica formalmente que se ha detectado una desviación alarmante entre su comportamiento actual y los estándares mínimos exigidos por este equipo. De persistir esta actitud —y en caso de no subsanarse de forma inmediata—, este órgano procederá a aplicar, sin previo aviso adicional, las siguientes medidas sancionadoras de carácter irreversible:
+## ✨ Funcionalidades principales
 
-Pena de formato perpetuo: Quedará obligado a revisar, unificar y corregir manualmente la totalidad de las referencias bibliográficas, notas al pie y márgenes del documento final, con independencia de su extensión.
+- **Catálogo de prendas base:** Selección de productos textiles disponibles según talla, color y disponibilidad en almacén.
+- **Personalización en web:** Subida y configuración de diseños propios por parte del cliente.
+- **Técnicas de producción:** Soporte para pedidos con acabado en **bordado** o **serigrafía**, adaptando costes y tiempos según la técnica elegida.
+- **Gestión integral de pedidos (SGE):** Seguimiento del estado del pedido (*pendiente de validación, en taller, empaquetado, enviado*).
+- **Control de stock y suministros:** Gestión de inventario tanto de prendas base como de consumibles (hilos, tintas, bastidores, etc.).
+- **Facturación y clientes:** Registro de clientes, generación de presupuestos y emisión de facturas automatizadas.
 
-Expropiación de turno de palabra: Perderá el derecho a intervenir en las decisiones creativas o técnicas del grupo, quedando su participación limitada a la validación de cambios menores mediante formulario triplicado.
+---
 
-Condena a la exposición obligatoria: Deberá defender en solitario los apartados más densos y técnicos ante el auditorio o tribunal correspondiente, sin posibilidad de delegar preguntas en el resto del equipo.
+## 🔄 Flujo operativo del sistema
 
-Recargo por demora e incidencias: Cada nueva incidencia atribuible a su conducta conllevará la incorporación inmediata de una tarea adicional no remunerada (en términos de descanso o crédito).
+1. **Pedido Web:** El cliente elige prenda, sube diseño y selecciona bordado o serigrafía.
+2. **Validación técnica:** Revisión del diseño y comprobación automática de stock en el sistema.
+3. **Orden de producción:** Asignación a taller según la técnica seleccionada.
+4. **Control de calidad y logística:** Empaquetado, actualización de inventario y envío al cliente.
+5. **Administración:** Registro contable y facturación dentro del sistema de gestión.
 
-La presente notificación surte efecto desde el momento de su lectura. Contra esta resolución no cabe recurso de alzada, súplica ni excusa de última hora.
+---
 
-Fdo.: La Comisión de Control y Supervivencia del Proyecto
+## 🛠️ Tecnologías y herramientas
+
+> *Nota: Completad o modificad esta sección según el stack técnico y el ERP que estéis utilizando.*
+
+- **Frontend / Web:** HTML5, CSS3, JavaScript *(o el framework que uséis)*
+- **Backend / Base de datos:** *(Ej. Python / PHP / Node.js + MySQL / PostgreSQL)*
+- **Sistema de Gestión (ERP/CRM
