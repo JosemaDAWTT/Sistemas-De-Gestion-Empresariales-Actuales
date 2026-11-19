@@ -1,6 +1,6 @@
 # 👕 VANEMA — ERP (Odoo) y Plataforma de Personalización Textil Bajo Pedido
 
-Proyecto académico para **Sistemas de Gestión Empresarial (SGE)** — Grado Superior **DAW / ASIR** — desarrollado por **Josemanuel Morató** e **Iván Piera**.
+Proyecto académico para **Sistemas de Gestión Empresarial (SGE)** — Grado Superior **DAW / ASIR** — desarrollado por **Jose Manuel Morató** e **Iván Piera**.
 
 ## Visión general
 - **Visión general --> Qué es VANEMA -->** Marca de personalización textil bajo pedido (*Make-to-Order*) con acabados de **bordado** y **serigrafía** sobre prendas base.
