@@ -1,50 +1,65 @@
 # Sistemas-De-Gesti-n-Empresariales-Actuales
 
-# 👕 VANEMA — Plataforma de Personalización Textil y Gestión Empresarial
+# 👕 VANEMA — ERP (Odoo) y Plataforma de Personalización Textil Bajo Pedido
 
 ![Estado del proyecto](https://img.shields.io/badge/Estado-En%20desarrollo-blue)
-![Módulo](https://img.shields.io/badge/Módulo-Sistemas%20de%20Gesti%C3%B3n%20Empresarial-green)
+![ERP](https://img.shields.io/badge/ERP-Odoo-purple)
+![Módulo](https://img.shields.io/badge/M%C3%B3dulo-Sistemas%20de%20Gesti%C3%B3n%20Empresarial-green)
 ![Ciclo](https://img.shields.io/badge/Grado%20Superior-DAW%20%2F%20ASIR-orange)
 
 ## 📖 Descripción del proyecto
 
 **VANEMA** es un proyecto académico desarrollado para la optativa de **Sistemas de Gestión Empresarial (SGE)** en un Ciclo Formativo de Grado Superior (**DAW / ASIR**).
 
-El proyecto plantea el entorno web y operativo de una marca enfocada en la **personalización de prendas bajo demanda**. A través de la web, los clientes eligen prendas base del catálogo, diseñan o suben sus propios archivos gráficos y seleccionan el tipo de acabado (**bordado** o **serigrafía**).
+El proyecto implementa la gestión integral sobre **Odoo ERP** de una marca especializada en la **personalización textil bajo pedido** (*Make-to-Order*), con acabados de **bordado** y **serigrafía** sobre prendas base.
 
-Desde el enfoque de **DAW y ASIR**, el proyecto aborda tanto el desarrollo y la experiencia de usuario de la plataforma como la integración de procesos, el soporte de servicios/infraestructura y la conexión con el sistema de gestión empresarial para cubrir todo el ciclo de vida del pedido: recepción, validación, taller/producción, inventario, facturación y envío.
-
----
-
-## ✨ Funcionalidades principales
-
-- **Catálogo de prendas base:** Consulta de prendas disponibles por modelo, talla, color y disponibilidad en stock.
-- **Personalización en web:** Configuración y subida de diseños personalizados por parte del cliente.
-- **Técnicas de producción:** Selección de **bordado** o **serigrafía**, adaptando el flujo y los costes según la técnica elegida.
-- **Gestión de pedidos (SGE):** Trazabilidad del pedido desde su entrada en web hasta producción, preparación y entrega.
-- **Control de stock y suministros:** Seguimiento de inventario de prendas base y materiales de taller (hilos, tintas, bastidores, etc.).
-- **Clientes y facturación:** Gestión de datos de cliente, presupuestos, órdenes internas y facturación.
+La comercialización se realiza a través de **Web** y **App móvil**, dando servicio tanto a **clientes particulares (B2C)** como a **empresas (B2B)**. Todo el flujo operativo está centralizado en **Odoo** para coordinar de extremo a extremo la entrada del pedido, la validación del diseño, la producción bajo demanda, el control de inventario y la facturación.
 
 ---
 
-## 🔄 Flujo operativo del sistema
+## 🎯 Modelo de negocio y canales
 
-1. **Solicitud web:** El cliente selecciona prenda, sube o configura su diseño y elige bordado o serigrafía.
-2. **Validación y stock:** Comprobación del diseño y verificación de disponibilidad de prenda y consumibles.
-3. **Producción:** Generación de orden de trabajo para bordado o serigrafía.
-4. **Logística y stock:** Actualización de inventario, empaquetado y gestión de envío.
-5. **Facturación:** Emisión de factura y registro del movimiento dentro del sistema de gestión.
+- **Modelo productivo:** Producción / personalización **bajo pedido** (*Make-to-Order*), evitando sobrestock de artículos ya personalizados.
+- **Canales de venta:** **Web** y **App móvil** conectados con Odoo.
+- **Segmentos de clientes:**
+  - **Particulares (B2C):** Pedidos unitarios o pequeñas tiradas configuradas directamente desde web o app.
+  - **Empresas (B2B):** Pedidos recurrentes o por volumen, gestión de presupuestos personalizados y facturación corporativa.
 
 ---
 
-## 🛠️ Stack tecnológico y sistemas
+## 🏢 Departamentos y módulos de Odoo
 
-> *Completad o ajustad este apartado según la arquitectura y herramientas reales de vuestro despliegue.*
+La estructura organizativa de **VANEMA** se articula dentro de **Odoo** mediante la integración de sus distintos departamentos y aplicaciones:
 
-- **Aplicación web (Frontend / Backend):** *(Ej. HTML5, CSS3, JavaScript, PHP / Node.js / Python)*
-- **Base de datos:** *(Ej. MySQL / MariaDB / PostgreSQL)*
-- **Sistema de Gestión Empresarial (ERP/CRM):** *(Ej. Odoo / Dolibarr / integración vía API o conector)*
-- **Infraestructura y administración (ASIR):** *(Ej. Linux Server, Nginx/Apache, Docker, copias de seguridad, DNS/SSL)*
+| Departamento | Función en VANEMA | Módulos de Odoo asociados |
+| :--- | :--- | :--- |
+| **Diseño** | Validación, adaptación y preparación de artes finales para **bordado** o **serigrafía**. | *Documentos / PLM / Proyectos* |
+| **Desarrollo de producto** | Definición del catálogo de prendas base, listas de materiales (escandallos) y rutas de fabricación. | *Fabricación (MRP) / PLM / Inventario* |
+| **Logística** | Control de stock de prendas base y consumibles (hilos, tintas, embalajes), órdenes de trabajo y envíos. | *Inventario / Fabricación (MRP) / Compras* |
+| **Marketing** | Campañas promocionales, automatización de comunicaciones y segmentación B2C y B2B. | *Email Marketing / Automatización / Sitio Web* |
+| **Ventas** | Gestión de pedidos web/app, tarifas por volumen, presupuestos a empresas y seguimiento comercial. | *Ventas / CRM / Sitio Web* |
+| **Atención al cliente** | Gestión de incidencias, consultas sobre estados de pedido, revisiones de diseño y postventa. | *Servicio de Asistencia (Helpdesk) / Contactos* |
+| **Finanzas** | Contabilidad, facturación automatizada, control de cobros/pagos y análisis de rentabilidad por pedido. | *Contabilidad / Facturación* |
+
+---
+
+## 🔄 Flujo operativo bajo pedido en Odoo
+
+1. **Pedido desde Web o App:** El cliente (particular o empresa) selecciona la prenda base, sube o configura su diseño y elige **bordado** o **serigrafía**.
+2. **Ventas y CRM:** El pedido o solicitud de presupuesto se registra automáticamente en **Odoo Ventas/CRM**.
+3. **Validación de Diseño:** El equipo de **Diseño** revisa el archivo gráfico y aprueba su viabilidad técnica para el taller.
+4. **Abastecimiento y Producción (MTO):** **Odoo Inventario y Fabricación** verifican el stock de prenda virgen y consumibles, generando la orden de producción bajo pedido.
+5. **Seguimiento y Soporte:** **Atención al cliente** gestiona cualquier consulta o incidencia sobre el estado del pedido desde *Helpdesk*.
+6. **Envío y Facturación:** **Logística** despacha el pedido y **Finanzas** emite y contabiliza la factura correspondiente.
+
+---
+
+## 🛠️ Stack tecnológico y arquitectura
+
+- **ERP:** Odoo *(Community / Enterprise)*
+- **Base de datos:** PostgreSQL
+- **Canales digitales:** Plataforma Web *(Odoo Website / Frontend propio)* y App móvil conectada vía API *(XML-RPC / JSON-RPC)*
+- **Infraestructura y despliegue (ASIR):** Servidor Linux, Docker / Docker Compose, Nginx como proxy inverso, SSL y políticas de backup
 - **Control de versiones:** Git & GitHub
 
 ---
@@ -58,4 +73,4 @@ Desde el enfoque de **DAW y ASIR**, el proyecto aborda tanto el desarrollo y la 
 
 ## 📄 Licencia
 
-Proyecto realizado con fines académicos para la asignatura de **Sistemas de Gestión Empresarial** (Grado Superior **DAW / ASIR**).
+Proyecto desarrollado con fines educativos para la asignatura de **Sistemas de Gestión Empresarial** (Grado Superior **DAW / ASIR**).
